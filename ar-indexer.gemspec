@@ -9,9 +9,11 @@ Gem::Specification.new do |spec|
 	spec.homepage       = "https://github.com/jstump/ar-indexer"
 	spec.require_paths  = ["lib"]
 	spec.files          = [
-													"./lib/ar-indexer.rb"
+													"./lib/ar-indexer.rb",
+													"./lib/ar-indexer/has-reverse-index.rb"
 	]
 	spec.license        = "GPL-2"
 	
 	spec.add_dependency('activerecord')
+	spec.add_dependency('activesupport')
 end
