@@ -15,4 +15,5 @@ Gem::Specification.new do |spec|
 	spec.license        = "GPL-2"
 	
 	spec.add_dependency('activerecord')
+	spec.add_dependency('activesupport')
 end
