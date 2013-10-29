@@ -3,7 +3,7 @@ module ARIndexer
 	module Model
 
 		def self.included(base)
-		base.send :extend, ClassMethods
+			base.send :extend, ClassMethods
 		end
 
 		module ClassMethods

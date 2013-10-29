@@ -6,6 +6,7 @@ module ARIndexer
 
 end
 
+include ARIndexer
 ActiveSupport.on_load(:active_record) do
   include ARIndexer::Model
 end
