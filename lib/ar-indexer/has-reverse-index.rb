@@ -26,12 +26,10 @@ module ARIndexer
 				def on_create_record
 					puts "Indexable record created"
 				end
-				module_function :on_create_record
 
 				def on_update_record
 					puts "Indexable record updated"
 				end
-				module_function :on_update_record
 
 			end
 

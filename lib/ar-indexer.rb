@@ -1,4 +1,7 @@
+require 'active_record'
+require 'active_support'
 require 'ar-indexer/has-reverse-index'
+require 'ar-indexer/indexer'
 
 module ARIndexer
 
