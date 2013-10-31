@@ -2,7 +2,7 @@ module ARIndexer
 
 	class ReverseIndex < ::ActiveRecord::Base
 
-		belongs_to :item, :polymorphic => true
+		validates_uniqueness_of :word, :scope => :model_name
 
 		def retrieve_id_array
 			id_array = self.id_list.split(',')

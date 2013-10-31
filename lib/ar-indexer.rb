@@ -7,6 +7,7 @@ require 'fast-stemmer'
 # Gem files
 require 'ar-indexer/reverse-index'
 require 'ar-indexer/has-reverse-index'
+require 'ar-indexer/stopwords'
 require 'ar-indexer/indexer'
 
 module ARIndexer
