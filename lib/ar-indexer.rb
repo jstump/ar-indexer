@@ -1,5 +1,8 @@
 require 'active_record'
 require 'active_support'
+require 'active_support/inflector'
+require 'htmlentities'
+require 'fast-stemmer'
 require 'ar-indexer/has-reverse-index'
 require 'ar-indexer/indexer'
 

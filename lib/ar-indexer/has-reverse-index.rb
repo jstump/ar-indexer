@@ -23,12 +23,28 @@ module ARIndexer
 
 				private
 
+				def array_of_values_to_index
+					values_for_indexing = []
+					self.indexed_fields.each do |f|
+						values_for_indexing << self.read_attribute(f.to_s)
+					end
+					return values_for_indexing
+				end
+
 				def on_create_record
 					puts "Indexable record created"
+					if !self.indexed_fields.empty?
+						values_for_indexing = array_of_values_to_index
+						puts Indexer.build_reverse_index(values_for_indexing)
+					end
 				end
 
 				def on_update_record
 					puts "Indexable record updated"
+					if !self.indexed_fields.empty?
+						values_for_indexing = array_of_values_to_index
+						puts Indexer.build_reverse_index(values_for_indexing)
+					end
 				end
 
 			end
