@@ -10,7 +10,9 @@ Gem::Specification.new do |spec|
 	spec.require_paths  = ["lib"]
 	spec.files          = [
 													"./lib/ar-indexer.rb",
+													"./lib/ar-indexer/reverse-index.rb",
 													"./lib/ar-indexer/has-reverse-index.rb",
+													"./lib/ar-indexer/stopwords.rb",
 													"./lib/ar-indexer/indexer.rb"
 	]
 	spec.license        = "GPL-2"
