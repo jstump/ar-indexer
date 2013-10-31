@@ -10,10 +10,13 @@ Gem::Specification.new do |spec|
 	spec.require_paths  = ["lib"]
 	spec.files          = [
 													"./lib/ar-indexer.rb",
-													"./lib/ar-indexer/has-reverse-index.rb"
+													"./lib/ar-indexer/has-reverse-index.rb",
+													"./lib/ar-indexer/indexer.rb"
 	]
 	spec.license        = "GPL-2"
 	
 	spec.add_dependency('activerecord')
 	spec.add_dependency('activesupport')
+	spec.add_dependency('htmlentities')
+	spec.add_dependency('fast-stemmer')
 end
