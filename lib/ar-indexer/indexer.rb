@@ -11,8 +11,7 @@ module ARIndexer
 			# Perform the initial split on spaces
 			lexicon = text.split(/\s+/)
 			# Drop any words that include no letters or numbers
-			# Also drop URLs and email addresses
-			lexicon.delete_if {|word| word.match(/(^[^\w\d]+$)|(^http(s){0,1}:\/\/.+$)|(^[a-zA-Z0-9\._\-]+@([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{1,4}$)/)}
+			lexicon.delete_if {|word| word.match(/^[^\w\d]+$/)}
 			# Clean up each array entry
 			lexicon.each do |word|
 				# Shift everything to lower case
@@ -26,7 +25,7 @@ module ARIndexer
 			lexicon.each do |word|
 				lexicon = lexicon.inject([word.gsub(/'/, ''), word.gsub(/'.+$/, '')], :<<) if word.match(/'/)
 				if word.match(/[\-_\|\/]/)
-					lexicon = lexicon.inject([word.split(/[\-_\|\/]/)], :<<)
+					lexicon = lexicon.inject([word.split(/[\-_\|\/@\.]/)], :<<)
 				end
 				stem = Stemmer.stem_word(word)
 				if stem != word && !stem.match(/[^a-z0-9]$/)
