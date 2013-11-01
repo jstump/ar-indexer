@@ -13,7 +13,8 @@ Gem::Specification.new do |spec|
 													"./lib/ar-indexer/reverse-index.rb",
 													"./lib/ar-indexer/has-reverse-index.rb",
 													"./lib/ar-indexer/stopwords.rb",
-													"./lib/ar-indexer/indexer.rb"
+													"./lib/ar-indexer/indexer.rb",
+													"./lib/ar-indexer/index-search.rb"
 	]
 	spec.license        = "GPL-2"
 	

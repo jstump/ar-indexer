@@ -9,6 +9,7 @@ require 'ar-indexer/reverse-index'
 require 'ar-indexer/has-reverse-index'
 require 'ar-indexer/stopwords'
 require 'ar-indexer/indexer'
+require 'ar-indexer/index-search'
 
 module ARIndexer
 
