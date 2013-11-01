@@ -16,7 +16,7 @@ module ARIndexer
 
 				after_create :on_create_record
 				after_update :on_update_record
-				before_destroy :on_delete_record
+				before_destroy :on_destroy_record
 			end
 			module_function :has_reverse_index
 
@@ -57,8 +57,8 @@ module ARIndexer
 					end
 				end
 
-				def on_delete_record
-					# 
+				def on_destroy_record
+					Indexer.remove_from_reverse_index(self.class.to_s.split('::').last.to_s, self.id)
 				end
 
 			end

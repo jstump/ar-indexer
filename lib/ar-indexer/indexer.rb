@@ -64,7 +64,7 @@ module ARIndexer
 				if rir.id_list.match(/,{0,1}#{record_id},{0,1}/)
 					if !forward_index.include? rir.word
 						id_array = rir.retrieve_id_array
-						id_array.delete(record_id)
+						id_array.delete(record_id.to_i)
 						if id_array.empty?
 							rir.destroy
 						else
@@ -90,6 +90,21 @@ module ARIndexer
 				end
 			end
 			self.clean_reverse_index(model_name, record_id, forward_index) if cleaning_required
+		end
+
+		def self.remove_from_reverse_index(model_name, record_id)
+			reverse_index_records = ReverseIndex.where(:model_name => model_name)
+			reverse_index_records.each do |rir|
+				id_array = rir.retrieve_id_array
+				if id_array.include? record_id.to_i
+					id_array.delete(record_id.to_i)
+					if id_array.empty?
+						rir.destroy
+					else
+						rir.update(:id_list => id_array.join(','))
+					end
+				end
+			end
 		end
 
 	end
