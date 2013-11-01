@@ -5,11 +5,11 @@ require 'active_support/inflector'
 require 'htmlentities'
 require 'fast-stemmer'
 # Gem files
-require 'ar-indexer/reverse-index'
-require 'ar-indexer/has-reverse-index'
-require 'ar-indexer/stopwords'
-require 'ar-indexer/indexer'
-require 'ar-indexer/index-search'
+require 'ar_indexer/reverse_index'
+require 'ar_indexer/has_reverse_index'
+require 'ar_indexer/stopwords'
+require 'ar_indexer/indexer'
+require 'ar_indexer/index_search'
 
 module ARIndexer
 

@@ -6,7 +6,7 @@ ARIndexer provides basic indexing and text search for ActiveRecord models. You c
 
 Add ARIndexer to your Gemfile
     
-    gem 'ar-indexer'
+    gem 'ar_indexer'
 
 Write a migration to add a reverse_indices table to the database (Rails migration generator coming soon)
 
