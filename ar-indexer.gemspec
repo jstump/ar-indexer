@@ -8,14 +8,7 @@ Gem::Specification.new do |spec|
 	spec.email          = "joshua.t.stump@gmail.com"
 	spec.homepage       = "https://github.com/jstump/ar-indexer"
 	spec.require_paths  = ["lib"]
-	spec.files          = [
-													"./lib/ar-indexer.rb",
-													"./lib/ar-indexer/reverse-index.rb",
-													"./lib/ar-indexer/has-reverse-index.rb",
-													"./lib/ar-indexer/stopwords.rb",
-													"./lib/ar-indexer/indexer.rb",
-													"./lib/ar-indexer/index-search.rb"
-	]
+	spec.files          = `git ls-files`.split("\n")
 	spec.license        = "GPL-2"
 	
 	spec.add_dependency('activerecord')
