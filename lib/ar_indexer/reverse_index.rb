@@ -2,6 +2,8 @@ module ARIndexer
 
 	class ReverseIndex < ::ActiveRecord::Base
 
+		attr_accessible :id_list, :model_name, :word
+
 		validates_uniqueness_of :word, :scope => :model_name
 
 		def retrieve_id_array
