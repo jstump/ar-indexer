@@ -7,6 +7,10 @@ module ARIndexer
 		validates_uniqueness_of :word, :scope => :model_name
 
 		# Retrieves the id_list property as a parsed array of integers
+		# 
+		# ==== Returns
+		# 
+		# array of integer
 
 		def retrieve_id_array
 			id_array = self.id_list.split(',')

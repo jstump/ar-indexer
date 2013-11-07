@@ -29,6 +29,10 @@ module ARIndexer
 		end
 
 		# Returns either the default :no_results_message, or the one specified on initialization
+		# 
+		# ==== Returns
+		# 
+		# string
 
 		def no_results_message
 			return @options[:no_results_message]
@@ -40,6 +44,10 @@ module ARIndexer
 		# ==== Parameters
 		# 
 		# * search_string: string on which to search for indexed objects
+		# 
+		# ==== Returns
+		# 
+		# array of ActiveRecord objects, or an empty array
 		# 
 		# ==== Examples
 		# 

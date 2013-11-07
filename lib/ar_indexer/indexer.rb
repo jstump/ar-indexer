@@ -9,6 +9,10 @@ module ARIndexer
 		# ==== Parameters
 		# 
 		# text: the string to be converted
+		# 
+		# ==== Returns
+		# 
+		# array of strings
 
 		def self.text_to_lexicon(text)
 			# Replace any HTML tag with a space
@@ -60,6 +64,10 @@ module ARIndexer
 		# ==== Parameters
 		# 
 		# values_to_index: array of string values to index
+		# 
+		# ==== Returns
+		# 
+		# array of strings
 
 		def self.build_forward_index(values_to_index)
 			forward_index = []
