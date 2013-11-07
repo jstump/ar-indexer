@@ -1,6 +1,14 @@
 module ARIndexer
 
+	# Contains functions for creating a forward index from text, then converting it to a reverse index
+
 	module Indexer
+
+		# Turns a string into lexicon array, including basic root words and plurals
+		# 
+		# ==== Parameters
+		# 
+		# text: the string to be converted
 
 		def self.text_to_lexicon(text)
 			# Replace any HTML tag with a space
@@ -46,6 +54,13 @@ module ARIndexer
 			return lexicon
 		end
 
+		# Takes an array of strings to be indexed, and calls text_to_lexicon on each.
+		# Returns the combined array flattened, uniquified, and sorted in alphabetical order
+		# 
+		# ==== Parameters
+		# 
+		# values_to_index: array of string values to index
+
 		def self.build_forward_index(values_to_index)
 			forward_index = []
 			# Run text_to_lexicon for each indexed field
@@ -56,6 +71,16 @@ module ARIndexer
 			forward_index = forward_index.flatten.uniq.sort
 			return forward_index
 		end
+
+		# For a given model name and object id, compares the list of words with the forward index of the text.
+		# If a word exists in the reverse index but not the forward index, removes the object id from the reverse index.
+		# If the id array is empty, removes the reverse index record
+		# 
+		# ==== Parameters
+		# 
+		# * model_name: string version of the model name to clean records for
+		# * record_id: object id to search for in the reverse index
+		# * forward_index: the array of words to check against
 
 		def self.clean_reverse_index(model_name, record_id, forward_index)
 			reverse_index_records = ReverseIndex.where(:model_name => model_name)
@@ -75,6 +100,16 @@ module ARIndexer
 			end
 		end
 
+		# Takes an array of values to index, runs it through build_forward_index(), then builds the reverse index
+		# from the returned values
+		# 
+		# ==== Parameters
+		# 
+		# * model_name: the string version of the model name
+		# * record_id: the id of the object being indexed
+		# * values_to_index: array of string objects to use in building the reverse index
+		# * cleaning_required: boolean flag, whether or not to run clean_reverse_index()
+
 		def self.build_reverse_index(model_name, record_id, values_to_index, cleaning_required = false)
 			forward_index = self.build_forward_index(values_to_index)
 			forward_index.each do |word|
@@ -90,6 +125,14 @@ module ARIndexer
 			end
 			self.clean_reverse_index(model_name, record_id, forward_index) if cleaning_required
 		end
+
+		# Removes an object id from the reverse index for a specified model.
+		# If the id array is empty after removing the record id, destroys the reverse index record
+		# 
+		# ==== Parameters
+		# 
+		# model_name: string version of the model name to remove records for
+		# record_id: object id to remove records for
 
 		def self.remove_from_reverse_index(model_name, record_id)
 			reverse_index_records = ReverseIndex.where(:model_name => model_name)

@@ -1,5 +1,7 @@
 module ARIndexer
 
+	# Contains array of stopwords that should not be stopwords
+
 	module Stopwords
 
 		STOPWORDS = [

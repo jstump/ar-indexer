@@ -1,12 +1,39 @@
 module ARIndexer
 
+	# Holds methods that are used to extend ActiveRecord models.
+	# Included automatically whenever ActiveRecord is required
+
 	module Model
+
+		# Extends a specified ActiveRecord model by adding the functions within the ClassMethods module.
+		# Called automatically on all ActiveRecord models
 
 		def self.included(base)
 			base.send :extend, ClassMethods
 		end
 
+		# Class methods that can be called on any ActiveRecord model to extend functionality
+
 		module ClassMethods
+
+			# Marks all string and text fields (or a subset thereof) of an ActiveRecord model
+			# for indexing and adds a necessary set of instance methods.
+			# If the [fields] parameter is set, indexes only the specified fields,
+			# otherwise indexes all string and text fields.
+			# 
+			# ==== Parameters
+			# 
+			# * fields: optional array of field names (as symbols) to be indexed
+			# 
+			# ==== Examples
+			# 
+			#   class Post < ActiveRecord::Base
+			#     has_reverse_index
+			#   end
+			# 
+			#   class Article < ActiveRecord::Base
+			#     has_reverse_index([:title, :content])
+			#   end
 
 			def has_reverse_index(fields = [])
 				send :include, InstanceMethods
@@ -19,6 +46,9 @@ module ARIndexer
 				before_destroy :on_destroy_record
 			end
 			module_function :has_reverse_index
+
+			# Instance methods available to instances of an ActiveRecord model which has had has_reverse_index()
+			# called on it. Currently, there are no public instance methods.
 
 			module InstanceMethods
 
