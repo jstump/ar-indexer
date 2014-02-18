@@ -41,13 +41,15 @@ At this point, ARIndexer will build and maintain a reverse index for each record
 
 ###Searching###
 
-ARIndexer also provides a simple search class for finding records by text search. To initialize an instance of this class, just pass it the ActiveRecord model it needs to search.
+ARIndexer also provides a simple search class for finding records by text search. To initialize an instance of this class, just pass it an array of ActiveRecord models it needs to search.
 
-    foo = IndexSearch.new(Article)
+    foo = IndexSearch.new([Article])
+    # Or search multiple models
+    # foo = IndexSearch.new([Article, List])
 
 You can also pass an options hash (which currently has a whole 1 option, `:no_results_message`)
 
-    foo = IndexSearch.new(Article, :no_results_message => "Hey man, there's nothing there.")
+    foo = IndexSearch.new([Article], :no_results_message => "Hey man, there's nothing there.")
 
 And now you're ready to search against the index that's been built.
 

@@ -8,7 +8,7 @@ module ARIndexer
   # 
   # === Parameters
   # 
-  # * model_name: constant denoting the ActiveRecord model to search
+  # * [model_names]: array of constants denoting the ActiveRecord models to search
   # * opts: optional hash of configuration options
   # 
   # === Options
@@ -17,9 +17,12 @@ module ARIndexer
 
   class IndexSearch
 
-    def initialize(model_name, opts = {})
-      @model_name = model_name.to_s.split('::').last
-      @model_class = @model_name.constantize
+    def initialize(model_names, opts = {})
+      @models = {}
+      model_names.each do |model|
+        @models[model.to_s.split('::').last] = model
+      end
+      puts @models
 
       @options = {
         :no_results_message => "Your #{@model_name} search returned no results."
@@ -57,22 +60,35 @@ module ARIndexer
 
     def run_search(search_string)
       search_terms = Indexer.expand_lexicon(Indexer.text_to_lexicon(search_string))
-      match_counts = {}
+      matches = {}
+      @models.keys.each do |model|
+        matches[model] = {}
+      end
       search_terms.each do |st|
-        if reverse_index_record = ReverseIndex.where(:model_name => @model_name, :word => st).first
-          reverse_index_record.retrieve_id_array.each do |id|
-            if match_counts.has_key?(id)
-              match_counts[id] = match_counts[id] + 1
-            else
-              match_counts[id] = 1
+        reverse_index_records = ReverseIndex.where(:model_name => [@models.keys], :word => st)
+        if reverse_index_records.count > 0
+          reverse_index_records.each do |rir|
+            rir.retrieve_id_array.each do |id|
+              if matches[rir.model_name].has_key?(id)
+                matches[rir.model_name][id] = matches[rir.model_name][id] + 1
+              else
+                matches[rir.model_name][id] = 1
+              end
             end
           end
         end
       end
-      unless match_counts.empty?
+      collected_matches = []
+      matches.each do |k,v|
+        unless v.empty?
+          collected_matches << v.to_a.map{|x| x << k}
+        end
+      end
+      unless collected_matches.empty?
+        collected_matches.flatten!(1)
         objects_to_return = []
-        match_counts.to_a.sort{|x,y| x[1] <=> y[1]}.collect{|x| x[0]}.reverse.each do |id|
-          objects_to_return << @model_class.find(id)
+        collected_matches.sort{|x,y| x[1] <=> y[1]}.reverse.each do |match|
+          objects_to_return << @models[match[2]].find(match[0])
         end
         return objects_to_return
       else

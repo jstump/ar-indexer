@@ -27,7 +27,7 @@ module ARIndexer
       # Split all words into an array
       lexicon = text.split(' ')
       # Remove stopwords and duplicates
-      lexicon = (lexicon - STOPWORDS).uniq
+      lexicon = (lexicon - Stopwords::STOPWORDS).uniq
       return lexicon
     end
 
@@ -54,7 +54,7 @@ module ARIndexer
         end
       end
       # Remove stopwords and duplicates again
-      lexicon = (lexicon - STOPWORDS).uniq
+      lexicon = (lexicon - Stopwords::STOPWORDS).uniq
       return lexicon
     end
 

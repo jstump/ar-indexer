@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
   spec.name           = "ar_indexer"
-  spec.version        = "0.1.3"
-  spec.date           = "2014-02-17"
+  spec.version        = "0.1.4"
+  spec.date           = "2014-02-18"
   spec.summary        = "Allows for reverse indexing selected ActiveRecord models. Handles searching and return of objects"
   spec.description    = spec.summary
   spec.authors        = ["Josh Stump"]

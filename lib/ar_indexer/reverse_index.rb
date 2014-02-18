@@ -2,7 +2,9 @@ module ARIndexer
 
   class ReverseIndex < ::ActiveRecord::Base
 
-    attr_accessible :id_list, :model_name, :word
+    if ::ActiveRecord::VERSION::MAJOR < 4
+      attr_accessible :id_list, :model_name, :word
+    end
 
     validates_uniqueness_of :word, :scope => :model_name
 
