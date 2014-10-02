@@ -1,100 +1,96 @@
 module ARIndexer
-
-  # Holds methods that are used to extend ActiveRecord models.
-  # Included automatically whenever ActiveRecord is required
-
   module Model
-
-    # Extends a specified ActiveRecord model by adding the functions within the ClassMethods module.
-    # Called automatically on all ActiveRecord models
-
     def self.included(base)
       base.send :extend, ClassMethods
     end
 
-    # Class methods that can be called on any ActiveRecord model to extend functionality
-
     module ClassMethods
+      def has_reverse_index(fields = [], associations = {})
+        fields.each do |field_name|
+          unless self.columns_hash.keys.include?(field_name.to_s)
+            unless ['string', 'text'].include?(self.columns_hash[field_name.to_s].type.to_s)
+              raise TypeError, 'Model properties provided to has_reverse_index() must be of field type string or text.'
+            end
+          end
+        end
 
-      # Marks all string and text fields (or a subset thereof) of an ActiveRecord model
-      # for indexing and adds a necessary set of instance methods.
-      # If the [fields] parameter is set, indexes only the specified fields,
-      # otherwise indexes all string and text fields.
-      # 
-      # ==== Parameters
-      # 
-      # * fields: optional array of field names (as symbols) to be indexed
-      # 
-      # ==== Examples
-      # 
-      #   class Post < ActiveRecord::Base
-      #     has_reverse_index
-      #   end
-      # 
-      #   class Article < ActiveRecord::Base
-      #     has_reverse_index([:title, :content])
-      #   end
+        associations.each do |association_name, lambda|
+          unless lambda.class == Proc
+            raise TypeError, 'Model associations must have a Proc provided in order to reach the appropriate value.'
+          end
+        end
 
-      def has_reverse_index(fields = [])
         send :include, InstanceMethods
 
         class_attribute :indexed_fields
-        self.indexed_fields = fields.dup
+        class_attribute :indexed_associations
+        self.indexed_fields = fields.clone || []
+        self.indexed_associations = associations.clone || {}
 
-        after_create :on_create_record
-        after_update :on_update_record
-        before_destroy :on_destroy_record
+        after_create :ar_indexer_on_create
+        after_update :ar_indexer_on_update
+        before_destroy :ar_indexer_on_destroy
       end
       module_function :has_reverse_index
 
-      # Instance methods available to instances of an ActiveRecord model which has had has_reverse_index()
-      # called on it. Currently, there are no public instance methods.
-
       module InstanceMethods
-
         private
 
-        def array_of_values_to_index
-          values_for_indexing = []
+        def ar_indexer_get_indexable_values
+          values_to_index = {}
+          
           if self.indexed_fields.empty?
-            self.class.columns.each do |c|
-              if ['string', 'text'].include? c.type.to_s
-                values_for_indexing << self.read_attribute(c.name)
+            self.class.columns.each do |column|
+              if ['string', 'text'].include? column.type.to_s
+                value = self.read_attribute(column.name)
+                if value.class == String
+                  unless value.empty?
+                    values_to_index[column.name] = value
+                  end
+                end
               end
             end
           else
-            self.indexed_fields.each do |f|
-              if ['string', 'text'].include? self.class.columns_hash[f.to_s].type.to_s
-                values_for_indexing << self.read_attribute(f.to_s)
+            self.indexed_fields.each do |field_name|
+              value = self[field_name]
+              if value.class == String
+                unless value.empty?
+                  values_to_index[field_name.to_s] = value
+                end
               end
             end
           end
-          values_for_indexing.delete_if {|v| [nil, ''].include? v}
-          return values_for_indexing
+
+          unless self.indexed_associations.empty?
+            self.indexed_associations.each do |association_name, lambda|
+              value = lambda.call(self)
+              if value.class == String
+                unless value.empty?
+                  values_to_index[association_name.to_s] = value
+                end
+              end
+            end
+          end
+
+          return values_to_index
         end
 
-        def on_create_record
-          values_for_indexing = array_of_values_to_index
-          unless values_for_indexing.empty?
-            Indexer.build_reverse_index(self.class.to_s.split('::').last.to_s, self.id, values_for_indexing, false)
+        def ar_indexer_on_create
+          ar_indexer_get_indexable_values.each do |field_name, value|
+            Indexer.index_string(self.class.to_s, self.id, field_name, value, false)
           end
         end
 
-        def on_update_record
-          values_for_indexing = array_of_values_to_index
-          unless values_for_indexing.empty?
-            Indexer.build_reverse_index(self.class.to_s.split('::').last.to_s, self.id, values_for_indexing, true)
+        def ar_indexer_on_update
+          ar_indexer_get_indexable_values.each do |field_name, value|
+            Indexer.index_string(self.class.to_s, self.id, field_name, value, true)
           end
         end
 
-        def on_destroy_record
-          Indexer.remove_from_reverse_index(self.class.to_s.split('::').last.to_s, self.id)
+        def ar_indexer_on_destroy
+          Indexer.remove_index(self.id)
         end
-
       end
-
     end
-
   end
-
 end

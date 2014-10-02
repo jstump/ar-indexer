@@ -14,6 +14,7 @@ Write a migration to add a reverse_indices table to the database (Rails migratio
       def change
         create_table :reverse_indices do |t|
           t.string :model_name
+          t.string :field_name
           t.string :word
           t.text :id_list
         end
