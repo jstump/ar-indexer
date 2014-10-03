@@ -77,13 +77,13 @@ module ARIndexer
 
         def ar_indexer_on_create
           ar_indexer_get_indexable_values.each do |field_name, value|
-            Indexer.index_string(self.class.to_s, self.id, field_name, value, false)
+            Indexer.index_string(self.class.to_s.split('::').last, self.id, field_name, value, false)
           end
         end
 
         def ar_indexer_on_update
           ar_indexer_get_indexable_values.each do |field_name, value|
-            Indexer.index_string(self.class.to_s, self.id, field_name, value, true)
+            Indexer.index_string(self.class.to_s.split('::').last, self.id, field_name, value, true)
           end
         end
 
