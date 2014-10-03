@@ -88,7 +88,7 @@ module ARIndexer
         end
 
         def ar_indexer_on_destroy
-          Indexer.remove_index(self.id)
+          Indexer.remove_index_id(self.class.to_s, self.id)
         end
       end
     end
