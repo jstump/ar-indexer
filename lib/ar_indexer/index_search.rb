@@ -11,7 +11,7 @@ module ARIndexer
           :fields => [],
           :match => :any,
           :sort => :relevance,
-          :sort_by => nil,
+          :sort_method => nil,
           :sort_direction => :desc,
           :no_results_message => 'No results were returned for the given search term.'
         }
@@ -118,7 +118,19 @@ module ARIndexer
       unsorted_results = ARSearch.get_object_counts(base_results, search_object.search_models, search_object.options(:match), match_threshold).flatten!(1) || []
       unless unsorted_results.empty?
         unsorted_objects = unsorted_results.collect {|result| result[2].constantize.find(result[0])}
-
+        sort_method = search_object.options(:sort_method)
+        case sort_method.class.to_s
+        when 'Symbol'
+          sorted_results = unsorted_objects.sort_by {|object| object[sort_method]}
+        when 'Proc'
+          sorted_results = unsorted_objects.sort_by {|object| sort_method.call(object)}
+        else
+          sorted_results = unsorted_objects
+        end
+        if search_object.options(:sort_direction) == :desc
+          sorted_results = sorted_results.reverse
+        end
+        return sorted_results 
       else
         return []
       end
