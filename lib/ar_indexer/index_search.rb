@@ -1,7 +1,7 @@
 module ARIndexer
   module ARSearch
     class IndexSearch
-      def initialize(models, opts)
+      def initialize(models, opts = {})
         @models = {}
         models.each do |model|
           @models[model.to_s.split('::').last] = model
@@ -13,6 +13,7 @@ module ARIndexer
           :sort => :relevance,
           :sort_method => nil,
           :sort_direction => :desc,
+          :stopwords => [],
           :no_results_message => 'No results were returned for the given search term.'
         }
         @options.merge!(opts)
@@ -29,10 +30,11 @@ module ARIndexer
       def search(value)
         # Build array of words for query `reverse_indices.word IN ('word1', 'word2')`
         if @options[:match] == :any
-          search_terms = ARSearch.expand_forward_index(Indexer.break_string(value))
+          search_terms = ARSearch.expand_forward_index(Indexer.break_string(value), @options[:stopwords])
           enforce_threshold = false
         else
-          search_terms = Indexer.break_string(value)
+          stopwords = (Stopwords::STOPWORDS + @options[:stopwords]).uniq
+          search_terms = (Indexer.break_string(value) - stopwords)
           enforce_threshold = true
         end
 
@@ -55,7 +57,7 @@ module ARIndexer
       end
     end
 
-    def self.expand_forward_index(forward_index)
+    def self.expand_forward_index(forward_index, stopwords)
       # Stem and pluralize
       forward_index.each do |word|
         root = Stemmer::stem_word(word)
@@ -69,7 +71,8 @@ module ARIndexer
       end
       
       # Remove stopwords and duplicates again
-      forward_index = (forward_index - Stopwords::STOPWORDS).uniq
+      stopwords = (Stopwords::STOPWORDS + stopwords).uniq
+      forward_index = (forward_index - stopwords).uniq
       return forward_index
     end
 

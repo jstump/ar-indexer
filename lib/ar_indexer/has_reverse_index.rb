@@ -14,8 +14,8 @@ module ARIndexer
           end
         end
 
-        associations.each do |association_name, lambda|
-          unless lambda.class == Proc
+        associations.each do |association_name, access_function|
+          unless access_function.class == Proc
             raise TypeError, 'Model associations must have a Proc provided in order to reach the appropriate value.'
           end
         end
@@ -62,8 +62,8 @@ module ARIndexer
           end
 
           unless self.indexed_associations.empty?
-            self.indexed_associations.each do |association_name, lambda|
-              value = lambda.call(self)
+            self.indexed_associations.each do |association_name, access_function|
+              value = access_function.call(self)
               if value.class == String
                 unless value.empty?
                   values_to_index[association_name.to_s] = value
