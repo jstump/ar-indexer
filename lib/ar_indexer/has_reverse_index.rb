@@ -34,6 +34,29 @@ module ARIndexer
       module_function :has_reverse_index
 
       module InstanceMethods
+        def reindex_object
+          values_to_index = ar_indexer_get_indexable_values
+          values_to_index.each do |field_name, value|
+            Indexer.index_string(self.class.to_s.split('::').last, self.id, field_name, value, false)
+          end
+        end
+        
+        def reindex_fields
+          values_to_index = ar_indexer_get_indexable_values
+          values_to_index.delete_if {|key, value| self.indexed_associations.keys.map{|field| field.to_s}.include?(key)}
+          values_to_index.each do |field_name, value|
+            Indexer.index_string(self.class.to_s.split('::').last, self.id, field_name, value, false)
+          end
+        end
+
+        def reindex_associations
+          values_to_index = ar_indexer_get_indexable_values
+          values_to_index.delete_if {|key, value| self.indexed_fields.map{|field| field.to_s}.include?(key)}
+          values_to_index.each do |field_name, value|
+            Indexer.index_string(self.class.to_s.split('::').last, self.id, field_name, value, false)
+          end
+        end
+
         private
 
         def ar_indexer_get_indexable_values

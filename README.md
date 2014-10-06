@@ -51,7 +51,7 @@ Have an ActiveRecord model? Want to index some text for searching? Just add the 
         }
       )
 
-At this point, ARIndexer will build and maintain a reverse index for each record under these models.
+At this point, ARIndexer will build and maintain a reverse index for each record under these models. If you need to reindex the object at any time, the instance methods `reindex_object`, `reindex_fields`, and `reindex_associations` are added to all ActiveRecord objects with `has_reverse_index` declared.
 
 ###Searching###
 
