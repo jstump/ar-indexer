@@ -64,13 +64,30 @@ ARIndexer also provides a simple search class for finding records by text search
 You can also pass an options hash to specify what fields should be searched, how the results should be sorted, a message for displaying if there are no results, etc. The default options hash is displayed below:
 
     @options = {
-      :fields => [], # If left as an empty array, will search all fields for the given model
-      :match => :any, # Match :any will expand your search string and find related results, :all will only return results that have as many keyword matches as words in the search string
-      :sort => :relevance, # :relevance will sort by number of keyword matches, :field allows you to specify a field to sort by
-      :sort_method => nil, # Allows for a lambda by which to access a sortable value. If nil, will just access the field value
-      :sort_direction => :desc, # Sort order, default is DESC so that the most relevant results will be returned first
-      :stopwords => [], # An array of words that should not be used in the search. ar_indexer has an internal array of basic stopwords, and these will be added to it
-      :no_results_message => 'No results were returned for the given search term.' # A stored message that can be returned if there are no results returned
+      :fields => [],
+      # If left as an empty array, will search all fields for the given model
+      
+      :match => :any,
+      # :any will expand your search string and find results that match any keyword
+      # :all will only return results that have as many keyword matches as words in the search string
+      
+      :sort => :relevance,
+      # :relevance will sort by number of keyword matches
+      # :field allows you to specify a field to sort by
+      
+      :sort_method => nil,
+      # Allows for a lambda by which to access a sortable value.
+      # If nil, will just access the field value
+      
+      :sort_direction => :desc,
+      # Sort order, default is DESC so that the most relevant results will be returned first
+      
+      :stopwords => [],
+      # An array of words that should not be used in the search.
+      # ar_indexer has an internal array of basic stopwords, and these will be added to it
+      
+      :no_results_message => 'No results were returned for the given search term.'
+      # A stored message that can be returned if there are no results returned
     }
 
     foo = IndexSearch.new([Article],
@@ -87,7 +104,7 @@ And now you're ready to search against the index that's been built.
 
     foo.search('some search string')
 
-`run_search` will return an array of ActiveRecord objects ordered by the number of matched terms within your search string. If no objects matched your search string, an emtpy array is returned. If no results are returned, you can request the `:no_results_message`
+`foo.search` will return an array of ActiveRecord objects ordered by the number of matched terms within your search string. If no objects matched your search string, an emtpy array is returned. If no results are returned, you can request the `:no_results_message`
 
     results = foo.run_search('some search string')
     unless results.empty?
