@@ -6,6 +6,8 @@ module ARIndexer
       # Decode HTML entities
       coder = HTMLEntities.new
       value = coder.decode(value)
+      # Split words on slashes and dashes
+      value.gsub!(/[\/\-]/, ' ')
       # Remove most punctuation
       value.gsub!(/[^a-zA-Z0-9\s]/, '')
       # Move everything to lower case
