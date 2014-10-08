@@ -1,5 +1,7 @@
 #ARIndexer#
 
+[![Gem Version](https://badge.fury.io/rb/ar_indexer.svg)](http://badge.fury.io/rb/ar_indexer)
+
 ARIndexer provides basic indexing and text search for ActiveRecord models. You choose which fields to index per model, and the index is automatically generated/updated on create/edit.
 
 ##Installation##
@@ -77,7 +79,8 @@ You can also pass an options hash to specify what fields should be searched, how
       
       :sort_method => nil,
       # Allows for a lambda by which to access a sortable value.
-      # If nil, will just access the field value
+      # Pass a proc that takes the AR object to access a sortable value
+      # Pass the symbol of the field name you want to access to just pull the field value
       
       :sort_direction => :desc,
       # Sort order, default is DESC so that the most relevant results will be returned first

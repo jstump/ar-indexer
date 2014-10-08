@@ -17,7 +17,7 @@ module ARIndexer
   module Version
     MAJOR = '0'
     MINOR = '2'
-    BUILD = '1'
+    BUILD = '2'
 
     STRING = "#{MAJOR}.#{MINOR}.#{BUILD}"
   end
