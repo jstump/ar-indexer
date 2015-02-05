@@ -46,6 +46,7 @@ To expand on the above configuration:
 * index_on_update: If empty, will index both fields and associations as an after_update function. Add `:fields` and/or `:associations` to the array to control which are automatically indexed.
 
 Below is an example configuration hash passed for an example `Article` model, which has a collection of `Tag` objects. In this example, we've chosen to only automatically index the fields, sometimes necessary when an AR object needs to have `reload` called on it to make sure associations are up to date. Include as many or as few options as you need need.
+    
     {
       fields: [:title, :subtitle, :content],
       associations: {
