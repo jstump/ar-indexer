@@ -10,17 +10,17 @@ Add ARIndexer to your Gemfile
     
     gem 'ar_indexer'
 
-Write a migration to add a reverse_indices table to the database (Rails migration generator coming soon)
+Write a migration to add a reverse_indices table to the database (Rails migration generator coming soon). Due to an exception encountered in Rails 4.2 (DangerousAttributes exception), the model\_name column has been renamed to model\_constant.
 
     class CreateReverseIndices < ActiveRecord::Migration
       def change
         create_table :reverse_indices do |t|
-          t.string :model_name
+          t.string :model_constant
           t.string :field_name
           t.string :word
           t.text :id_list
         end
-        add_index :reverse_indices, [:model_name, :field_name, :word], :unique => true
+        add_index :reverse_indices, [:model_constant, :field_name, :word], :unique => true
       end
     end
 
@@ -45,7 +45,7 @@ To expand on the above configuration:
 * index_on_create: If empty, will index both fields and associations as an after_create function. Add `:fields` and/or `:associations` to the array to control which are automatically indexed.
 * index_on_update: If empty, will index both fields and associations as an after_update function. Add `:fields` and/or `:associations` to the array to control which are automatically indexed.
 
-Below is an example configuration hash passed for an example `Article` model, which has a collection of `Tag` objects. In this example, we've chosen to only automatically index the fields, sometimes necessary when an AR object needs to have `reload` called on it to make sure associations are up to date. Include as many or as few options as you need need.
+Below is an example configuration hash passed for an example `Article` model, which has a collection of `Tag` objects. In this example, we've chosen to only automatically index the fields, sometimes necessary when an AR object needs to have `reload` called on it to make sure associations are up to date. Include as many or as few options as you need.
     
     {
       fields: [:title, :subtitle, :content],

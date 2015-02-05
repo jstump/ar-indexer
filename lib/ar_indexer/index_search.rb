@@ -40,9 +40,9 @@ module ARIndexer
 
         # Execute AR query based on @options[:fields]
         if @options[:fields].empty?
-          base_results = ReverseIndex.where(:model_name => self.search_models, :word => search_terms)
+          base_results = ReverseIndex.where(:model_constant => self.search_models, :word => search_terms)
         else
-          base_results = ReverseIndex.where(:model_name => self.search_models, :field_name => @options[:fields], :word => search_terms)
+          base_results = ReverseIndex.where(:model_constant => self.search_models, :field_name => @options[:fields], :word => search_terms)
         end
 
         unless base_results.empty?
@@ -80,7 +80,7 @@ module ARIndexer
       relevancy_counts = {}
       unsorted_results = []
       search_models.each do |model|
-        model_results = base_results.where(:model_name => model)
+        model_results = base_results.where(:model_constant => model)
         unless model_results.empty?
           relevancy_counts[model] = {}
           model_results.each do |result|

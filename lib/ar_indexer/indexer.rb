@@ -19,24 +19,24 @@ module ARIndexer
       return forward_index
     end
 
-    def self.index_string(model_name, object_id, field_name, value, repair_on_completion)
+    def self.index_string(model_constant, object_id, field_name, value, repair_on_completion)
       forward_index = self.break_string(value)
       forward_index.each do |word|
-        if index_record = ReverseIndex.where(:model_name => model_name, :field_name => field_name, :word => word).first
+        if index_record = ReverseIndex.where(:model_constant => model_constant, :field_name => field_name, :word => word).first
           current_id_array = index_record.retrieve_id_array
           unless current_id_array.include? object_id
             new_id_list = (current_id_array << object_id).sort.join(',')
             index_record.update(:id_list => new_id_list)
           end
         else
-          ReverseIndex.create(:model_name => model_name, :field_name => field_name, :word => word, :id_list => object_id)
+          ReverseIndex.create(:model_constant => model_constant, :field_name => field_name, :word => word, :id_list => object_id)
         end
       end
-      repair_index(model_name, object_id, field_name, forward_index) if repair_on_completion
+      repair_index(model_constant, object_id, field_name, forward_index) if repair_on_completion
     end
 
-    def self.remove_index_id(model_name, object_id)
-      index_records = ReverseIndex.where(:model_name => model_name)
+    def self.remove_index_id(model_constant, object_id)
+      index_records = ReverseIndex.where(:model_constant => model_constant)
       if index_records.count > 0
         index_records.each do |record|
           if record.id_list.match(/#{object_id},{0,1}/)
@@ -54,8 +54,8 @@ module ARIndexer
       end
     end
 
-    def self.repair_index(model_name, object_id, field_name, forward_index)
-      index_records = ReverseIndex.where(:model_name => model_name, :field_name => field_name)
+    def self.repair_index(model_constant, object_id, field_name, forward_index)
+      index_records = ReverseIndex.where(:model_constant => model_constant, :field_name => field_name)
       if index_records.count > 0
         index_records.each do |record|
           if record.id_list.match(/#{object_id},{0,1}/)
