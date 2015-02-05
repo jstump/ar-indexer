@@ -1,8 +1,8 @@
 Gem::Specification.new do |spec|
   # Basic Gem Description
   spec.name          = "ar_indexer"
-  spec.version       = "0.2.2"
-  spec.date          = "2014-10-08"
+  spec.version       = "0.3.0"
+  spec.date          = "2015-02-05"
   spec.summary       = "Allows for reverse indexing selected ActiveRecord models. Handles searching and return of objects"
   spec.description   = spec.summary
   spec.authors       = ["Josh MacLachlan"]
@@ -19,5 +19,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency('fast-stemmer')
 
   # Post-Install Message
-  spec.post_install_message = "If you're upgrading from v0.1.4 to v0.2.0, read the updated documentation. Your application will throw exceptions when trying to access indexed models."
+  spec.post_install_message = "If upgrading from v0.1.x to 0.2.x or 0.2.x to 0.3.x, be sure to read the updated documentation. Major changes were made to initialization."
 end

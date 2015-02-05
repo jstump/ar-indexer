@@ -16,8 +16,8 @@ module ARIndexer
   # Gem version storage
   module Version
     MAJOR = '0'
-    MINOR = '2'
-    BUILD = '2'
+    MINOR = '3'
+    BUILD = '0'
 
     STRING = "#{MAJOR}.#{MINOR}.#{BUILD}"
   end

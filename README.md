@@ -30,30 +30,55 @@ Run `rake db:migrate`
 
 ###Indexing###
 
-Have an ActiveRecord model? Want to index some text for searching? Just add the `has_reverse_index` function to your model. Call the function with no parameters and ARIndexer will index all string and text fields. You can pass an optional array of field names (as symbols), and ARIndexer will index only these fields. Also, you can pass a hash with association names as keys and a lambda to access the necessary data. Note that the lambda must accept the AR object as its sole argument and must return a string.
+Have an ActiveRecord model? Want to index some text for searching? Just add the `has_reverse_index` function to your model. Call the function with no parameters and ARIndexer will index all string and text fields. You can pass an optional hash of configuration values to customize which fields and associations are indexed, and how often each type of "field" are indexed. The default hash is below, and will be merged with the hash you pass in.
+
+    ari_configuration = {
+      fields: [],
+      associations: {},
+      index_on_create: [],
+      index_on_update: []
+    }
+
+To expand on the above configuration:
+* fields: If empty, will index all String and Text fields of the AR model. Pass an array of `Symbol` field names to only index the whitelisted fields
+* associations: If empty, will not index any associations. For each association to be indexed, add a `Symbol` key as the name of the association, pointing to a `lambda` which takes the object being indexed, and returns a string value.
+* index_on_create: If empty, will index both fields and associations as an after_create function. Add `:fields` and/or `:associations` to the array to control which are automatically indexed.
+* index_on_update: If empty, will index both fields and associations as an after_update function. Add `:fields` and/or `:associations` to the array to control which are automatically indexed.
+
+Below is an example configuration hash passed for an example `Article` model, which has a collection of `Tag` objects. In this example, we've chosen to only automatically index the fields, sometimes necessary when an AR object needs to have `reload` called on it to make sure associations are up to date. Include as many or as few options as you need need.
+    {
+      fields: [:title, :subtitle, :content],
+      associations: {
+        tags: lambda {|object| object.tags.collect{|tag| tag.name}.join(', ')}
+      },
+      index_on_create: [:fields],
+      index_on_update: [:fields]
+    }
+
+Now let's see some examples in the models:
 
     class Post < ActiveRecord::Base
       has_reverse_index
     end
 
     class Article < ActiveRecord::Base
-      has_reverse_index([:title, :content])
+      has_reverse_index({
+        fields: [:title, :content]
+      })
     end
 
     class Article < ActiveRecord::Base
       has_many :article_tags
       has_many :tags, :through => :article_tags
-      has_reverse_index(
-        [
-          :title,
-          :content
-        ],
-        {
-          :tags => lambda {|object| object.tags.collect{|tag| tag.name}.join(', ')}
+      has_reverse_index({
+        fields: [:title, :content],
+        associations: {
+          tags: lambda {|object| object.tags.collect{|tag| tag.name}.join(', ')}
         }
-      )
+      })
+    end
 
-At this point, ARIndexer will build and maintain a reverse index for each record under these models. If you need to reindex the object at any time, the instance methods `reindex_object`, `reindex_fields`, and `reindex_associations` are added to all ActiveRecord objects with `has_reverse_index` declared.
+At this point, ARIndexer will build and maintain a reverse index for each record under these models. If you need to reindex the object at any time, the instance methods `index_object`, `index_fields`, and `index_associations` are added to all ActiveRecord objects with `has_reverse_index` declared.
 
 ###Searching###
 
