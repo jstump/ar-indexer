@@ -1,8 +1,8 @@
 Gem::Specification.new do |spec|
   # Basic Gem Description
   spec.name          = "ar_indexer"
-  spec.version       = "0.3.1"
-  spec.date          = "2015-02-05"
+  spec.version       = "0.3.2"
+  spec.date          = "2018-11-21"
   spec.summary       = "Allows for reverse indexing selected ActiveRecord models. Handles searching and return of objects"
   spec.description   = spec.summary
   spec.authors       = ["Josh MacLachlan"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.files         = `git ls-files`.split("\n")
   spec.license       = "GPL-2"
-  
+
   # Runtime Dependencies
   spec.add_dependency('activerecord', '>= 3.0.0')
   spec.add_dependency('activesupport', '>= 3.0.0')
